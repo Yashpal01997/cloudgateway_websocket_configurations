@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetchRegistry : true
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: microservice-foo
+          uri: lb://microservice-foo
+          predicates:
+            - Path=/microservice-foo/**
+          filters:
+            - RewritePath=/microservice-foo(?<segment>/?.*), $\{segment}
+
+        - id: microservice-bar
+          uri: lb://microservice-bar
+          predicates:
+            - Path=/microservice-bar/**
+          filters:
+            - RewritePath=/microservice-bar(?<segment>/?.*), $\{segment}
+
+        - id: microservice-users
+          uri: lb://microservice-users
+          predicates:
+            - Path=/microservice-users/**
+          filters:
+            - RewritePath=/microservice-users(?<segment>/?.*), $\{segment}
